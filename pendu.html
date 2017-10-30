@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Le Pendu</title>
+	<style type="text/css">
+		.answer {
+			border:3px solid grey;
+			transition: border .3s ease;
+		}
+
+		.good {
+			border: 3px solid green;
+		}
+
+		.bad {
+			border: 3px solid red;
+		}
+
+		input:focus {
+			outline: none;
+		}
+	</style>
+</head>
+<body style="text-align:center;">
+
+	<div role="main" style="padding: 16px;">
+		<div class="area" style="width: 60%;height: 80px;margin: 0 auto 20px;background-color: salmon;border-radius: 10px;">
+			<span class="dots" style="color: #fff;font-size:30px;line-height:80px;"></span>
+		</div>
+
+		<div class="area" style="margin-bottom: 20px;">
+			Vies: <span class="lives">10</span>
+		</div>
+
+		<input type="text" maxlength="1" class="answer" style="width:20%;height:22px;border-radius:30px;text-align:center;font-size:24px;">
+
+		<div class="area" style="margin-top:10px;">
+			<span class="message"></span>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		
+		// mots
+		var words = ['ballon', 'cocktail', 'lune', 'plage', 'nouilles'];
+		var ran = words[(Math.floor(Math.random() * 5))];
+
+		var hidden = [];
+		var dots = document.querySelector('span.dots');
+
+		function displayHidden() {
+			for (var i = 0; i < ran.length; i++) {
+				dots.innerHTML += hidden[i];
+			}
+		}
+
+		for (var i = 0; i < ran.length; i++) {
+			hidden.push('-');
+		}
+
+		displayHidden();
+
+		var answer = document.querySelector('input.answer');
+		var message = document.querySelector('span.message');
+		var lives = document.querySelector('span.lives');
+
+		var proposition = '';
+		var currentLives = 10;
+		var good = false;
+
+		if (currentLives >= 1) {
+			// comparaison proposition / réponse
+			answer.addEventListener('keypress', function(e){
+
+				var key = e.which || e.keyCode;
+
+			    if (key === 13) {
+
+			     	proposition = answer.value;
+
+			     	for (var i = 0; i < ran.length; i++) {
+			     		if (proposition === ran[i]) {
+			     			hidden[i] = proposition;
+			     			good = true;
+			     		}
+			     	}
+
+			     	if (good) {
+			     		answer.classList.remove('bad');
+			     		answer.classList.add('good');
+			     		dots.innerHTML = '';
+			     		message.innerHTML = 'Bravo !';
+			     		displayHidden();
+			     	} else {
+			     		answer.classList.remove('good');
+			     		answer.classList.add('bad');
+			     		currentLives--;
+			     		if (currentLives < 0) {
+			     			currentLives = 0;
+			     		}
+			     		lives.innerHTML = currentLives;
+			     		message.innerHTML = 'Cette lettre n\'est pas dans le mot caché !';
+			     	}
+			     	
+			     	good = false;
+
+			    } 
+
+			});
+		}
+
+	</script>
+</body>
+</html>
